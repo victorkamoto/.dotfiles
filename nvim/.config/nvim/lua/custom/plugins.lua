@@ -138,5 +138,9 @@ local plugins = {
       require("copilot").setup(opts)
     end
   },
+  {
+    "christoomey/vim-tmux-navigator",
+    lazy = false,
+  },
 }
 return plugins

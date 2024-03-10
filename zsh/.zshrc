@@ -87,3 +87,6 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+# Alias for nvim
+alias vim=nvim

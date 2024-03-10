@@ -1,5 +1,14 @@
 local M = {}
 
+M.general = {
+  n = {
+    ["<C-h>"] = { "<cmd> TmuxNavigateLeft<CR>", "Window left" },
+    ["<C-j>"] = { "<cmd> TmuxNavigateDown<CR>", "Window down" },
+    ["<C-k>"] = { "<cmd> TmuxNavigateUp<CR>", "Window up" },
+    ["<C-l>"] = { "<cmd> TmuxNavigateRight<CR>", "Window right" },
+  }
+}
+
 M.dap = {
   plugin = true,
   n = {
