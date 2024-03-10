@@ -23,6 +23,7 @@ for _, lsp in ipairs(servers) do
           staticcheck = true,
           analyses = {
             unusedParams = true,
+            shadow = true,
           },
         },
       },
