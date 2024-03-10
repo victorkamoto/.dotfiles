@@ -1,0 +1,10 @@
+# ~/.config/starship.toml
+
+
+command_timeout = 2000
+
+[hostname]
+ssh_only = false
+format = "on [$hostname](bold blue) "
+trim_at = ".companyname.com"
+disabled = false
