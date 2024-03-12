@@ -6,6 +6,7 @@ M.general = {
     ["<C-j>"] = { "<cmd> TmuxNavigateDown<CR>", "Window down" },
     ["<C-k>"] = { "<cmd> TmuxNavigateUp<CR>", "Window up" },
     ["<C-l>"] = { "<cmd> TmuxNavigateRight<CR>", "Window right" },
+    ["gl"] = { "<cmd>lua vim.diagnostic.open_float()<CR>", "Open diagnostic float" },
   }
 }
 
@@ -19,22 +20,6 @@ M.dap = {
     ["<leader>de"] = {
       "<cmd> DapStepOver <CR>",
       "Step over"
-    },
-    ["<leader>di"] = {
-      "<cmd> DapStepInto <CR>",
-      "Step into"
-    },
-    ["<leader>do"] = {
-      "<cmd> DapStepOut <CR>",
-      "Step out"
-    },
-    ["<leader>ds"] = {
-      "<cmd> DapStop <CR>",
-      "Stop the debugger"
-    },
-    ["<leader>duf"] = {
-      "<cmd> DapToggleFloat <CR>",
-      "Toggle floating window"
     },
     ["<leader>dus"] = {
       function ()
