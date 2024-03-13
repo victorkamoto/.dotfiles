@@ -72,7 +72,7 @@ M.crates = {
   n = {
     ["<leader>rcu"] = {
       function ()
-        require('crates').updgrade_all_crates()
+        require('crates').upgrade_all_crates()
       end,
       "Update crates"
     },
