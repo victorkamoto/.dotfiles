@@ -5,7 +5,7 @@ local lspconfig = require("lspconfig")
 local util = require "lspconfig/util"
 
 -- Rust LSP via rustaceanvim, config in ./rustaceanvim-cfg.lua
-local servers = { "gopls", "clangd", "tsserver", "tailwindcss", "eslint" }
+local servers = { "gopls", "clangd", "tsserver", "tailwindcss", "eslint", "pyright", "ruff_lsp" }
 
 for _, lsp in ipairs(servers) do
   if lsp == "gopls" then

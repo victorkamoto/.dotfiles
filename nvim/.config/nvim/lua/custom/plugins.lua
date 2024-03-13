@@ -9,6 +9,7 @@ local plugins = {
         -- C++
         "clangd",
         "clang-format",
+        -- Debugger for C++ & Rust
         "codelldb",
         -- JS/TS
         "typescript-language-server",
@@ -17,13 +18,19 @@ local plugins = {
         "prettierd",
         -- Rust
         "rust-analyzer",
+        -- Python: lsp, formatter & linter, static analysis
+        "pyright",
+        "ruff-lsp",
+        "black",
+        "mypy",
+        "debugpy",
       }
     }
   },
   -- Treesitter - Syntax highlighting
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = function ()
+    opts = function()
       local opts = require "plugins.configs.treesitter"
       opts.ensure_installed = {
         "lua",
@@ -35,6 +42,7 @@ local plugins = {
         "typescript",
         "tsx",
         "rust",
+        "python",
       }
       return opts
     end
@@ -42,7 +50,7 @@ local plugins = {
   --  LSP Config - Language Server Protocol
   {
     "neovim/nvim-lspconfig",
-    config = function ()
+    config = function()
       require "plugins.configs.lspconfig"
       require "custom.configs.lspconfig"
     end
@@ -51,8 +59,8 @@ local plugins = {
   {
     "nvimtools/none-ls.nvim",
     event = "VeryLazy",
-    ft = { "go", "cpp" , "js", "ts", "jsx", "tsx" },
-    opts = function ()
+    ft = { "go", "cpp", "js", "ts", "jsx", "tsx", "py" },
+    opts = function()
       return require("custom.configs.null-ls")
     end,
   },
@@ -60,7 +68,7 @@ local plugins = {
   {
     "rust-lang/rust.vim",
     ft = "rust",
-    init = function ()
+    init = function()
       vim.g.rustfmt_autosave = 1
     end
   },
@@ -86,7 +94,7 @@ local plugins = {
   },
   {
     "hrsh7th/nvim-cmp",
-    opts = function ()
+    opts = function()
       local M = require "plugins.configs.cmp"
       table.insert(M.sources, { name = "crates" })
       return M
@@ -101,7 +109,7 @@ local plugins = {
       "typescript",
       "typescriptreact",
     },
-    config = function ()
+    config = function()
       require("nvim-ts-autotag").setup()
     end
   },
@@ -109,40 +117,29 @@ local plugins = {
   {
     "olexsmir/gopher.nvim",
     ft = "go",
-    config = function (_, opts)
+    config = function(_, opts)
       require("gopher").setup(opts)
       require("core.utils").load_mappings("gopher")
     end,
-    build = function ()
+    build = function()
       vim.cmd [[silent! GoInstallDeps]]
     end,
   },
   -- DAP - Debug Adapter Protocol
   {
     "mfussenegger/nvim-dap",
-    init = function (_, _)
+    init = function(_, _)
       require("core.utils").load_mappings("dap")
     end
   },
-  -- DAP: C++
-  {
-    "jay-babu/mason-nvim-dap.nvim",
-    event = "VeryLazy",
-    dependencies = {
-      "williamboman/mason.nvim",
-      "mfussenegger/nvim-dap",
-    },
-    opts = {
-      handlers = {}
-    },
-  },
+  -- DAP UI
   {
     "rcarriga/nvim-dap-ui",
     event = "VeryLazy",
     dependencies = {
       "mfussenegger/nvim-dap"
     },
-    config = function ()
+    config = function()
       local dap = require("dap")
       local dapui = require("dapui")
       dapui.setup()
@@ -157,14 +154,48 @@ local plugins = {
       end
     end,
   },
+  -- DAP Virtual Text
+  {
+    "theHamsta/nvim-dap-virtual-text",
+    lazy = false,
+    config = function()
+      require("nvim-dap-virtual-text").setup()
+    end
+  },
+  -- DAP: C++
+  {
+    "jay-babu/mason-nvim-dap.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "williamboman/mason.nvim",
+      "mfussenegger/nvim-dap",
+    },
+    opts = {
+      handlers = {}
+    },
+  },
   -- DAP Go
   {
     "leoluz/nvim-dap-go",
     ft = "go",
     dependencies = "mfussenegger/nvim-dap",
-    config = function (_, opts)
+    config = function(_, opts)
       require("dap-go").setup(opts)
       require("core.utils").load_mappings("dap_go")
+    end
+  },
+  -- DAP Python
+  {
+    "mfussenegger/nvim-dap-python",
+    ft = "python",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+      "rcarriga/nvim-dap-ui",
+    },
+    config = function()
+      local path = "~/.local/share/nvim/mason/packages/debugpy/venv/bin/python"
+      require("dap-python").setup(path)
+      require("core.utils").load_mappings("dap_python")
     end
   },
   -- GitHub Copilot
@@ -172,13 +203,14 @@ local plugins = {
     "zbirenbaum/copilot.lua",
     cmd = "Copilot",
     event = "VeryLazy",
-    opts = function ()
+    opts = function()
       return require "custom.configs.copilot-cfg"
     end,
     config = function(_, opts)
       require("copilot").setup(opts)
     end
   },
+  -- Tmux Navigator
   {
     "christoomey/vim-tmux-navigator",
     lazy = false,

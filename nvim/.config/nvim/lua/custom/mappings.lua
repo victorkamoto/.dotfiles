@@ -72,11 +72,22 @@ M.crates = {
   n = {
     ["<leader>rcu"] = {
       function ()
-        require('crates').update_all_crates()
+        require('crates').updgrade_all_crates()
       end,
       "Update crates"
     },
   },
+}
+
+M.dap_python = {
+  plugin = true,
+  n = {
+    ["<leader>dpr"] = {
+      function()
+        require('dap-python').test_method()
+      end
+    }
+  }
 }
 
 return M
