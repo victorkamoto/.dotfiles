@@ -15,6 +15,8 @@ local plugins = {
         "tailwindcss-language-server",
         "eslint-lsp",
         "prettierd",
+        -- Rust
+        "rust-analyzer",
       }
     }
   },
@@ -27,9 +29,12 @@ local plugins = {
         "lua",
         "go",
         "cpp",
+        "html",
+        "css",
         "javascript",
         "typescript",
         "tsx",
+        "rust",
       }
       return opts
     end
@@ -50,6 +55,24 @@ local plugins = {
     opts = function ()
       return require("custom.configs.null-ls")
     end,
+  },
+  -- -- Rust formatting via rust.vim
+  {
+    "rust-lang/rust.vim",
+    ft = "rust",
+    init = function ()
+      vim.g.rustfmt_autosave = 1
+    end
+  },
+  -- Rust tools via rustacean.vim
+  {
+    "mrcjkb/rustaceanvim",
+    version = "^4",
+    ft = { "rust" },
+    dependencies = "neovim/nvim-lspconfig",
+    config = function()
+      require "custom.configs.rustaceanvim-cfg"
+    end
   },
   -- Autotag - Auto close and auto rename tags
   {
@@ -132,7 +155,7 @@ local plugins = {
     cmd = "Copilot",
     event = "VeryLazy",
     opts = function ()
-      return require "custom.configs.copilotcfg"
+      return require "custom.configs.copilot-cfg"
     end,
     config = function(_, opts)
       require("copilot").setup(opts)

@@ -1,11 +1,10 @@
-local base = require("plugins.configs.lspconfig")
 local on_attach = require("plugins.configs.lspconfig").on_attach
 local capabilities = require("plugins.configs.lspconfig").capabilities
 
 local lspconfig = require("lspconfig")
 local util = require "lspconfig/util"
 
-
+-- Rust LSP via rustaceanvim, config in ./rustaceanvim-cfg.lua
 local servers = { "gopls", "clangd", "tsserver", "tailwindcss", "eslint" }
 
 for _, lsp in ipairs(servers) do
