@@ -47,6 +47,11 @@ local plugins = {
       return opts
     end
   },
+  -- Treesitter context
+  {
+    "nvim-treesitter/nvim-treesitter-context",
+    event = "BufRead",
+  },
   --  LSP Config - Language Server Protocol
   {
     "neovim/nvim-lspconfig",
