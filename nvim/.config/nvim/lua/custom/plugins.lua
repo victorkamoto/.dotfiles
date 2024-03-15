@@ -242,5 +242,18 @@ local plugins = {
     "tpope/vim-fugitive",
     event = "BufRead",
   },
+  -- Minimap
+  {
+    'gorbit99/codewindow.nvim',
+    event = "BufRead",
+    config = function()
+      local codewindow = require('codewindow')
+      codewindow.setup({
+        auto_enable = true,
+        window_border = 'none',
+      })
+      codewindow.apply_default_keybinds()
+    end,
+  }
 }
 return plugins
