@@ -235,5 +235,10 @@ local plugins = {
     "christoomey/vim-tmux-navigator",
     lazy = false,
   },
+  -- Vim Fugitive
+  {
+    "tpope/vim-fugitive",
+    event = "BufRead",
+  },
 }
 return plugins
