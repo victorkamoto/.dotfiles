@@ -28,7 +28,7 @@ local plugins = {
       }
     }
   },
-  -- Treesitter - Syntax highlighting
+  -- Treesitter
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function()
