@@ -16,6 +16,7 @@ local plugins = {
         "tailwindcss-language-server",
         "eslint-lsp",
         "prettierd",
+        "js-debug-adapter",
         -- Rust
         "rust-analyzer",
         -- Python: lsp, formatter & linter, static analysis
@@ -148,6 +149,7 @@ local plugins = {
   {
     "mfussenegger/nvim-dap",
     init = function(_, _)
+      require("custom.configs.dap-cfg")
       require("core.utils").load_mappings("dap")
     end
   },
