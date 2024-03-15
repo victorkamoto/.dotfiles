@@ -237,10 +237,18 @@ local plugins = {
     "christoomey/vim-tmux-navigator",
     lazy = false,
   },
-  -- Vim Fugitive
+  -- Neogit
   {
-    "tpope/vim-fugitive",
-    event = "BufRead",
+    "NeogitOrg/neogit",
+    event = "VeryLazy",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "sindrets/diffview.nvim",
+    },
+    config = true
+  },
+  {
+    'sindrets/diffview.nvim'
   },
   -- Minimap
   {
