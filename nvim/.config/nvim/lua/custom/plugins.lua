@@ -44,12 +44,26 @@ local plugins = {
         "rust",
         "python",
       }
+      opts.refactor = {
+        highlight_definitions = { enable = true },
+        smart_rename = {
+          enable = true,
+          keymaps = {
+            smart_rename = "grr",
+          },
+        },
+      }
       return opts
-    end
+    end,
   },
   -- Treesitter context
   {
     "nvim-treesitter/nvim-treesitter-context",
+    event = "BufRead",
+  },
+  -- Treesitter refactor
+  {
+    "nvim-treesitter/nvim-treesitter-refactor",
     event = "BufRead",
   },
   --  LSP Config - Language Server Protocol
@@ -176,6 +190,7 @@ local plugins = {
       "mfussenegger/nvim-dap",
     },
     opts = {
+      automatic_setup = true,
       handlers = {}
     },
   },

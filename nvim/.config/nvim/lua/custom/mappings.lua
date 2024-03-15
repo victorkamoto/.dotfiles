@@ -15,24 +15,32 @@ M.dap = {
   n = {
     ["<leader>db"] = {
       "<cmd> DapToggleBreakpoint <CR>",
-      "Add breakpoint at line"
+      "Debug: Toggle Breakpoint"
     },
     ["<leader>de"] = {
       "<cmd> DapStepOver <CR>",
-      "Step over"
+      "Debug: Step Over"
     },
-    ["<leader>dus"] = {
-      function ()
+    ["<leader>di"] = {
+      "<cmd> DapStepInto <CR>",
+      "Debug: Step Into"
+    },
+    ["<leader>do"] = {
+      "<cmd> DapStepOut <CR>",
+      "Debug: Step Out"
+    },
+    ["<leader>dr"] = {
+      "<cmd> DapContinue <CR>",
+      "Debug: Start/Continue",
+    },
+    ["<leader>du"] = {
+      function()
         local widgets = require('dap.ui.widgets');
         local sidebar = widgets.sidebar(widgets.scopes);
         sidebar.open();
       end,
-      "Open debugging sidebar"
+      "Debug: Open debugging sidebar"
     },
-    ["<leader>dr"] = {
-      "<cmd> DapContinue <CR>",
-      "Start or continue the debugger",
-    }
   }
 }
 
@@ -40,13 +48,13 @@ M.dap_go = {
   plugin = true,
   n = {
     ["<leader>dgt"] = {
-      function ()
+      function()
         require('dap-go').debug_test()
       end,
       "Debug go test"
     },
     ["<leader>dgl"] = {
-      function ()
+      function()
         require('dap-go').debug_last()
       end,
       "Debug last go test"
@@ -71,7 +79,7 @@ M.gopher = {
 M.crates = {
   n = {
     ["<leader>rcu"] = {
-      function ()
+      function()
         require('crates').upgrade_all_crates()
       end,
       "Update crates"
