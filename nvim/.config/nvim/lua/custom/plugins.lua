@@ -257,16 +257,35 @@ local plugins = {
     config = function()
       local codewindow = require('codewindow')
       codewindow.setup({
-        auto_enable = true,
         window_border = 'none',
       })
       codewindow.apply_default_keybinds()
     end,
   },
-  -- Undo tree 
+  -- Undo tree
   {
     "mbbill/undotree",
     event = "BufRead",
+  },
+  -- Override and enable nvimtree git integration
+  {
+    "nvim-tree/nvim-tree.lua",
+    opts = function()
+      local opts = require "plugins.configs.nvimtree"
+      opts.git = {
+        enable = true,
+        ignore = true,
+      }
+      opts.renderer = {
+        highlight_git = true,
+        icons = {
+          show = {
+            git = true,
+          }
+        }
+      }
+      return opts
+    end,
   },
 }
 return plugins
