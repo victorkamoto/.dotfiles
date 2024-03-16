@@ -262,6 +262,11 @@ local plugins = {
       })
       codewindow.apply_default_keybinds()
     end,
-  }
+  },
+  -- Undo tree 
+  {
+    "mbbill/undotree",
+    event = "BufRead",
+  },
 }
 return plugins
