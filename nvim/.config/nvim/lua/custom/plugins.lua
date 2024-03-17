@@ -16,7 +16,6 @@ local plugins = {
         "tailwindcss-language-server",
         "eslint-lsp",
         "prettierd",
-        "js-debug-adapter",
         -- Rust
         "rust-analyzer",
         -- Python: lsp, formatter & linter, static analysis
@@ -87,6 +86,7 @@ local plugins = {
   -- -- Rust formatting via rust.vim
   {
     "rust-lang/rust.vim",
+    event = "VeryLazy",
     ft = "rust",
     init = function()
       vim.g.rustfmt_autosave = 1
@@ -95,6 +95,7 @@ local plugins = {
   -- Rust tools via rustacean.vim
   {
     "mrcjkb/rustaceanvim",
+    event = "VeryLazy",
     version = "^4",
     ft = { "rust" },
     dependencies = "neovim/nvim-lspconfig",
@@ -105,6 +106,7 @@ local plugins = {
   -- Cargo crates
   {
     "saecki/crates.nvim",
+    event = "VeryLazy",
     ft = { "rust", "toml" },
     config = function(_, opts)
       local crates = require("crates")
@@ -123,6 +125,7 @@ local plugins = {
   -- Autotag - Auto close and auto rename tags
   {
     "windwp/nvim-ts-autotag",
+    event = "VeryLazy",
     ft = {
       "javascript",
       "javascriptreact",
@@ -136,6 +139,7 @@ local plugins = {
   -- Gopher - Go utilities
   {
     "olexsmir/gopher.nvim",
+    event = "VeryLazy",
     ft = "go",
     config = function(_, opts)
       require("gopher").setup(opts)
@@ -148,8 +152,8 @@ local plugins = {
   -- DAP - Debug Adapter Protocol
   {
     "mfussenegger/nvim-dap",
+    event = "VeryLazy",
     config = function()
-      require "custom.configs.dap-cfg"
       require("core.utils").load_mappings("dap")
     end,
   },
@@ -165,7 +169,7 @@ local plugins = {
       local dapui = require("dapui")
       dapui.setup()
       dap.listeners.after.event_initialized["dapui_config"] = function()
-        dapui.open()
+        dapui.open({ reset = true })
       end
       dap.listeners.before.event_terminated["dapui_config"] = function()
         dapui.close()
@@ -178,7 +182,8 @@ local plugins = {
   -- DAP Virtual Text
   {
     "theHamsta/nvim-dap-virtual-text",
-    lazy = false,
+    event = "VeryLazy",
+    dependencies = "mfussenegger/nvim-dap",
     config = function()
       require("nvim-dap-virtual-text").setup()
     end
@@ -199,6 +204,7 @@ local plugins = {
   -- DAP Go
   {
     "leoluz/nvim-dap-go",
+    event = "VeryLazy",
     ft = "go",
     dependencies = "mfussenegger/nvim-dap",
     config = function(_, opts)
@@ -209,6 +215,7 @@ local plugins = {
   -- DAP Python
   {
     "mfussenegger/nvim-dap-python",
+    event = "VeryLazy",
     ft = "python",
     dependencies = {
       "mfussenegger/nvim-dap",
@@ -235,7 +242,7 @@ local plugins = {
   -- Tmux Navigator
   {
     "christoomey/vim-tmux-navigator",
-    lazy = false,
+    event = "VeryLazy"
   },
   -- Neogit
   {
@@ -248,7 +255,8 @@ local plugins = {
     config = true
   },
   {
-    'sindrets/diffview.nvim'
+    'sindrets/diffview.nvim',
+    event = "VeryLazy",
   },
   -- Minimap
   {
