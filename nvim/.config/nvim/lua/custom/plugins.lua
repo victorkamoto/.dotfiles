@@ -148,10 +148,10 @@ local plugins = {
   -- DAP - Debug Adapter Protocol
   {
     "mfussenegger/nvim-dap",
-    init = function(_, _)
-      require("custom.configs.dap-cfg")
+    config = function()
+      require "custom.configs.dap-cfg"
       require("core.utils").load_mappings("dap")
-    end
+    end,
   },
   -- DAP UI
   {
