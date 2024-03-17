@@ -42,6 +42,13 @@ for _, lsp in ipairs(servers) do
         on_attach(client, bufnr)
       end
     }
+  elseif lsp == "eslint" then
+    lspconfig[lsp].setup {
+      on_attach = function (client, bufnr)
+        client.server_capabilities.documentFormattingProvider = true
+        on_attach(client, bufnr)
+      end
+    }
   elseif lsp == "tsserver" then
     lspconfig[lsp].setup {
       on_attach = on_attach,
