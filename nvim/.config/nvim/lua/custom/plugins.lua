@@ -16,6 +16,7 @@ local plugins = {
         "tailwindcss-language-server",
         "eslint-lsp",
         "prettierd",
+        "js-debug-adapter",
         -- Rust
         "rust-analyzer",
         -- Python: lsp, formatter & linter, static analysis
@@ -153,6 +154,73 @@ local plugins = {
   {
     "mfussenegger/nvim-dap",
     event = "VeryLazy",
+    opts = function()
+      local dap = require("dap")
+      if not dap.adapters["pwa-node"] then
+        require("dap").adapters["pwa-node"] = {
+          type = "server",
+          host = "localhost",
+          port = "${port}",
+          executable = {
+            command = "node",
+            args = {
+              require("mason-registry").get_package("js-debug-adapter"):get_install_path()
+              .. "/js-debug/src/dapDebugServer.js",
+              "${port}",
+            },
+          },
+        }
+      end
+      for _, language in ipairs({ "javascript" }) do
+        if not dap.configurations[language] then
+          dap.configurations[language] = {
+            {
+              type = 'pwa-node',
+              request = 'launch',
+              name = 'Launch Current File (pwa-node)',
+              cwd = vim.fn.getcwd(),
+              args = { '${file}' },
+              sourceMaps = true,
+              protocol = 'inspector',
+            },
+            {
+              type = 'pwa-node',
+              request = 'launch',
+              name = 'Launch Test Current File (pwa-node with jest)',
+              cwd = vim.fn.getcwd(),
+              runtimeArgs = { '${workspaceFolder}/node_modules/.bin/jest' },
+              runtimeExecutable = 'node',
+              args = { '${file}', '--coverage', 'false' },
+              rootPath = '${workspaceFolder}',
+              sourceMaps = true,
+              console = 'integratedTerminal',
+              internalConsoleOptions = 'neverOpen',
+              skipFiles = { '<node_internals>/**', 'node_modules/**' },
+            },
+            {
+              type = 'pwa-node',
+              request = 'launch',
+              name = 'Launch Test Current File (pwa-node with vitest)',
+              cwd = vim.fn.getcwd(),
+              program = '${workspaceFolder}/node_modules/vitest/vitest.mjs',
+              args = { '--inspect-brk', '--threads', 'false', 'run', '${file}' },
+              autoAttachChildProcesses = true,
+              smartStep = true,
+              console = 'integratedTerminal',
+              skipFiles = { '<node_internals>/**', 'node_modules/**' },
+            },
+            {
+              type = 'pwa-node',
+              request = 'attach',
+              name = 'Attach Program (pwa-node)',
+              cwd = vim.fn.getcwd(),
+              processId = require('dap.utils').pick_process,
+              skipFiles = { '<node_internals>/**' },
+            },
+          }
+        end
+      end
+    end,
     config = function()
       require("core.utils").load_mappings("dap")
     end,
@@ -188,7 +256,7 @@ local plugins = {
       require("nvim-dap-virtual-text").setup()
     end
   },
-  -- DAP: C++
+  -- Mason - DAP bridge
   {
     "jay-babu/mason-nvim-dap.nvim",
     event = "VeryLazy",
