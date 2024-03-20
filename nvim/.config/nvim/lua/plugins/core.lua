@@ -1,0 +1,48 @@
+-- Overrides for the core plugins go here
+return {
+  -- Dashboard
+  {
+    "nvimdev/dashboard-nvim",
+    opts = {
+      config = {
+        header = vim.split(string.rep("\n", 4) .. [[
+	      ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗           Z
+	      ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║       Z    
+	      ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║    z       
+	      ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║  z         
+	      ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║            
+	      ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝            
+
+	                        [ @victorkamoto ]                           
+    ]] .. "\n\n", "\n"),
+      },
+    },
+  },
+  -- Colorscheme
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "catppuccin",
+    },
+  },
+  -- Emoji
+  {
+    "hrsh7th/nvim-cmp",
+    dependencies = { "hrsh7th/cmp-emoji" },
+    ---@param opts cmp.ConfigSchema
+    opts = function(_, opts)
+      table.insert(opts.sources, { name = "emoji" })
+    end,
+  },
+  -- Neotree
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    opts = {
+      filesystem = {
+        filtered_items = {
+          visible = true,
+        },
+      },
+    },
+  },
+}
