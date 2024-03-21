@@ -25,6 +25,14 @@ return {
       colorscheme = "catppuccin",
     },
   },
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    priority = 1000,
+    opts = {
+      transparent_background = true,
+    },
+  },
   -- Emoji
   {
     "hrsh7th/nvim-cmp",
