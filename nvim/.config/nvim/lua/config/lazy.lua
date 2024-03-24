@@ -28,6 +28,7 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.lang.python" },
     { import = "lazyvim.plugins.extras.formatting.black" },
     { import = "lazyvim.plugins.extras.lang.java" },
+    { import = "lazyvim.plugins.extras.test.core" },
     -- import/override with your plugins
     { import = "plugins" },
   },
