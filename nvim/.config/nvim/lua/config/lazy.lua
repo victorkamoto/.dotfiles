@@ -30,6 +30,7 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.lang.java" },
     { import = "lazyvim.plugins.extras.test.core" },
     { import = "lazyvim.plugins.extras.editor.outline" },
+    { import = "lazyvim.plugins.extras.util.dot" },
     -- import/override with your plugins
     { import = "plugins" },
   },
