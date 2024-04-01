@@ -39,5 +39,16 @@ return {
       end
       return path:with_suffix(".md")
     end,
+
+    wiki_link_func = function(opts)
+      return require("obsidian.util").wiki_link_alias_only(opts)
+    end,
+
+    templates = {
+      subdir = "Templates",
+      date_format = "%Y-%m-%d-%a",
+      time_format = "%H:%M",
+      tags = "",
+    },
   },
 }
