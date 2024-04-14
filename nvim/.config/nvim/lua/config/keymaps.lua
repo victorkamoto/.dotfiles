@@ -4,3 +4,6 @@
 
 -- oil.nvim
 vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+
+-- carbon-now.nvim
+vim.keymap.set("v", "<leader>cn", ":CarbonNow<CR>", { silent = true })
