@@ -127,4 +127,44 @@ return {
       })
     end,
   },
+  -- treesitter context
+  {
+    "nvim-treesitter/nvim-treesitter-context",
+    opts = { mode = "cursor", max_lines = 6 },
+  },
+  {
+    "RRethy/vim-illuminate",
+    enabled = false,
+  },
+  -- Treesitter refactor
+  {
+    "nvim-treesitter/nvim-treesitter-refactor",
+    event = "BufRead",
+  },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = {
+      refactor = {
+        highlight_definitions = { enable = true },
+        smart_rename = {
+          enable = true,
+          keymaps = {
+            smart_rename = "grr",
+          },
+        },
+        navigation = {
+          enable = true,
+          -- Assign keymaps to false to disable them, e.g. `goto_definition = false`.
+          keymaps = {
+            goto_definition = false,
+            list_definitions = false,
+            list_definitions_toc = false,
+
+            goto_next_usage = "]]",
+            goto_previous_usage = "[[",
+          },
+        },
+      },
+    },
+  },
 }
