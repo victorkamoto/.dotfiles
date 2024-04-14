@@ -1,5 +1,5 @@
 {
-  "height": 30,
+  "height": 25,
   "spacing": 4,
   "modules-left": [
     "custom/launcher",
@@ -156,7 +156,7 @@
     "format": "{format_source}   {icon}",
     "format-bluetooth": "{icon}   {format_source}",
     "format-bluetooth-muted": " {icon}   {format_source}",
-    "format-muted": "{format_source}    ",
+    "format-muted": "{format_source}   {icon}",
     "format-source": "",
     "format-source-muted": " ",
     "format-icons": {
