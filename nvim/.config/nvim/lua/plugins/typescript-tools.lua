@@ -1,8 +1,13 @@
 return {
   {
     "pmizio/typescript-tools.nvim",
-    event = "VeryLazy",
+    lazy = true,
+    ft = { "typescript", "javascript", "javascriptreact", "typescriptreact" },
     dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-    opts = {},
+    opts = {
+      settings = {
+        separate_diagnostic_server = false,
+      },
+    },
   },
 }

@@ -9,6 +9,7 @@ export PATH=~/go/bin:$PATH
 export ANDROID_HOME=$HOME/Android/Sdk
 export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH="$HOME/.config/composer/vendor/bin:$PATH"
 
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.zsh_history
@@ -50,9 +51,6 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-# Starship prompt
-eval "$(starship init zsh)"
-
 # bun completions
 [ -s "/home/vic/.bun/_bun" ] && source "/home/vic/.bun/_bun"
 
@@ -67,7 +65,13 @@ source /usr/share/nvm/nvm.sh
 source /usr/share/nvm/bash_completion
 source /usr/share/nvm/install-nvm-exec
 
-
+# pnpm
+export PNPM_HOME="/home/vic/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
 
 # mkdir && cd helper
 function mkcd {
@@ -80,13 +84,21 @@ function mkcd {
         fi
 }
 
-# pnpm
-export PNPM_HOME="/home/vic/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
-
 # Alias for nvim
 alias vim=nvim
+
+# Alias for fzf-man
+alias fman='compgen -c | fzf | xargs man'
+
+# Alias for fzf-tldr
+alias ftldr='compgen -c | fzf | xargs tldr'
+
+# Alias for kickstart
+alias vim-kickstart='NVIM_APPNAME="nvim-kickstart" nvim'
+
+# Set up fzf key bindings and fuzzy completion
+eval "$(fzf --zsh)"
+
+# Starship prompt
+eval "$(starship init zsh)"
+

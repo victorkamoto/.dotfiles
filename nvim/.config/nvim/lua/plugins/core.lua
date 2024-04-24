@@ -5,16 +5,23 @@ return {
     "nvimdev/dashboard-nvim",
     opts = {
       config = {
-        header = vim.split(string.rep("\n", 4) .. [[
-	      ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗           Z
-	      ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║       Z    
-	      ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║    z       
-	      ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║  z         
-	      ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║            
-	      ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝            
-
-	                        [ @victorkamoto ]                           
-    ]] .. "\n\n", "\n"),
+        header = vim.split(string.rep("\n", 3) .. [[
+⠸⣷⣦⠤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣠⣤⠀⠀⠀
+⠀⠙⣿⡄⠈⠑⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠔⠊⠉⣿⡿⠁⠀⠀⠀
+⠀⠀⠈⠣⡀⠀⠀⠑⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⡠⠊⠁⠀⠀⣰⠟⠀⠀⠀⣀⣀
+⠀⠀⠀⠀⠈⠢⣄⠀⡈⠒⠊⠉⠁⠀⠈⠉⠑⠚⠀⠀⣀⠔⢊⣠⠤⠒⠊⠉⠀⡜
+⠀⠀⠀⠀⠀⠀⠀⡽⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠩⡔⠊⠁⠀⠀⠀⠀⠀⠀⠇
+⠀⠀⠀⠀⠀⠀⠀⡇⢠⡤⢄⠀⠀⠀⠀⠀⡠⢤⣄⠀⡇⠀⠀⠀⠀⠀⠀⠀⢰⠀
+⠀⠀⠀⠀⠀⠀⢀⠇⠹⠿⠟⠀⠀⠤⠀⠀⠻⠿⠟⠀⣇⠀⠀⡀⠠⠄⠒⠊⠁⠀
+⠀⠀⠀⠀⠀⠀⢸⣿⣿⡆⠀⠰⠤⠖⠦⠴⠀⢀⣶⣿⣿⠀⠙⢄⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⢻⣿⠃⠀⠀⠀⠀⠀⠀⠀⠈⠿⡿⠛⢄⠀⠀⠱⣄⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⢸⠈⠓⠦⠀⣀⣀⣀⠀⡠⠴⠊⠹⡞⣁⠤⠒⠉⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⣠⠃⠀⠀⠀⠀⡌⠉⠉⡤⠀⠀⠀⠀⢻⠿⠆⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠰⠁⡀⠀⠀⠀⠀⢸⠀⢰⠃⠀⠀⠀⢠⠀⢣⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⢶⣗⠧⡀⢳⠀⠀⠀⠀⢸⣀⣸⠀⠀⠀⢀⡜⠀⣸⢤⣶⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠈⠻⣿⣦⣈⣧⡀⠀⠀⢸⣿⣿⠀⠀⢀⣼⡀⣨⣿⡿⠁⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠈⠻⠿⠿⠓⠄⠤⠘⠉⠙⠤⢀⠾⠿⣿⠟⠋ ⠀⠀⠀⠀⠀⠀⠀
+        ]] .. "\n\n", "\n"),
       },
     },
   },
@@ -22,11 +29,19 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "catppuccin",
+      colorscheme = "gruvbox-material",
     },
   },
   {
+    "sainnhe/gruvbox-material",
+  },
+  {
+    "folke/tokyonight.nvim",
+    enabled = false,
+  },
+  {
     "catppuccin/nvim",
+    enabled = false,
     name = "catppuccin",
     priority = 1000,
     opts = {
@@ -47,6 +62,7 @@ return {
     "nvim-neo-tree/neo-tree.nvim",
     opts = {
       filesystem = {
+        hijack_netrw_behavior = "disabled",
         filtered_items = {
           visible = true,
         },
@@ -56,6 +72,10 @@ return {
   -- Git signs
   {
     "lewis6991/gitsigns.nvim",
+    config = function()
+      require("gitsigns").setup()
+      require("scrollbar.handlers.gitsigns").setup()
+    end,
     opts = {
       current_line_blame = true,
     },
@@ -131,40 +151,5 @@ return {
   {
     "nvim-treesitter/nvim-treesitter-context",
     opts = { mode = "cursor", max_lines = 6 },
-  },
-  {
-    "RRethy/vim-illuminate",
-    enabled = false,
-  },
-  -- Treesitter refactor
-  {
-    "nvim-treesitter/nvim-treesitter-refactor",
-    event = "BufRead",
-  },
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = {
-      refactor = {
-        highlight_definitions = { enable = true },
-        smart_rename = {
-          enable = true,
-          keymaps = {
-            smart_rename = "grr",
-          },
-        },
-        navigation = {
-          enable = true,
-          -- Assign keymaps to false to disable them, e.g. `goto_definition = false`.
-          keymaps = {
-            goto_definition = false,
-            list_definitions = false,
-            list_definitions_toc = false,
-
-            goto_next_usage = "]]",
-            goto_previous_usage = "[[",
-          },
-        },
-      },
-    },
   },
 }
