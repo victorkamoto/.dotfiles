@@ -11,5 +11,7 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
 vim.api.nvim_create_autocmd({ "VimLeave" }, {
   callback = function()
     vim.cmd(":silent !kitty @ set-spacing padding=default")
+    -- workaround for issue: https://github.com/neovim/neovim/issues/21856
+    vim.cmd("sleep 10m")
   end,
 })
