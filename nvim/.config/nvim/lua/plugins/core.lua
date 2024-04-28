@@ -29,11 +29,23 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "gruvbox-material",
+      colorscheme = function()
+        -- empty func to override default behaviour
+      end,
     },
   },
   {
     "sainnhe/gruvbox-material",
+    config = function()
+      -- opts
+      vim.g.gruvbox_material_background = "hard"
+      vim.g.gruvbox_material_better_performance = 1
+      -- set
+      vim.cmd.colorscheme("gruvbox-material")
+      -- tweaks
+      vim.api.nvim_set_hl(0, "FloatBorder", { link = "Normal" })
+      vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
+    end,
   },
   {
     "folke/tokyonight.nvim",
@@ -43,19 +55,6 @@ return {
     "catppuccin/nvim",
     enabled = false,
     name = "catppuccin",
-    priority = 1000,
-    opts = {
-      transparent_background = true,
-    },
-  },
-  -- Emoji
-  {
-    "hrsh7th/nvim-cmp",
-    dependencies = { "hrsh7th/cmp-emoji" },
-    ---@param opts cmp.ConfigSchema
-    opts = function(_, opts)
-      table.insert(opts.sources, { name = "emoji" })
-    end,
   },
   -- Neotree
   {
@@ -91,8 +90,6 @@ return {
       },
     },
   },
-  -- SuperTab
-
   {
     "L3MON4D3/LuaSnip",
     keys = function()
@@ -101,8 +98,20 @@ return {
   },
   {
     "hrsh7th/nvim-cmp",
+    dependencies = "hrsh7th/cmp-emoji",
     ---@param opts cmp.ConfigSchema
     opts = function(_, opts)
+      -- Emoji
+      table.insert(opts.sources, { name = "emoji" })
+
+      local cmp = require("cmp")
+      -- Borders
+      opts.window = {
+        completion = cmp.config.window.bordered(),
+        documentation = cmp.config.window.bordered(),
+      }
+
+      -- SuperTab
       local has_words_before = function()
         unpack = unpack or table.unpack
         local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -110,7 +119,6 @@ return {
       end
 
       local luasnip = require("luasnip")
-      local cmp = require("cmp")
 
       opts.mapping = vim.tbl_extend("force", opts.mapping, {
         ["<Tab>"] = cmp.mapping(function(fallback)
@@ -151,5 +159,32 @@ return {
   {
     "nvim-treesitter/nvim-treesitter-context",
     opts = { mode = "cursor", max_lines = 6 },
+  },
+  -- Mason borders
+  {
+    "williamboman/mason.nvim",
+    opts = {
+      ui = {
+        border = "rounded",
+      },
+    },
+  },
+  {
+    "folke/noice.nvim",
+    opts = {
+      presets = {
+        lsp_doc_border = true,
+      },
+    },
+  },
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      diagnostics = {
+        float = {
+          border = "rounded",
+        },
+      },
+    },
   },
 }
