@@ -158,7 +158,7 @@ return {
   -- treesitter context
   {
     "nvim-treesitter/nvim-treesitter-context",
-    opts = { mode = "cursor", max_lines = 6 },
+    opts = { mode = "cursor", max_lines = 0 },
   },
   -- Mason borders
   {
