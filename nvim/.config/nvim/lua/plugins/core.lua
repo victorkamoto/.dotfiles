@@ -66,6 +66,9 @@ return {
           visible = true,
         },
       },
+      window = {
+        position = "right",
+      },
     },
   },
   -- Git signs
