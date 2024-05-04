@@ -15,12 +15,14 @@ local function map(mode, lhs, rhs, opts)
 end
 
 -- oil.nvim
-vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+map("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
 -- carbon-now.nvim
-vim.keymap.set("v", "<leader>cn", ":CarbonNow<CR>", { silent = true })
+map("v", "<leader>cn", ":CarbonNow<CR>", { silent = true, desc = "Screenshot selection" })
 
 --lazydocker
 map("n", "<leader>gd", function()
   Util.terminal({ "lazydocker", "-f", Util.root() .. "docker-compose.yml" }, { cwd = Util.root(), esc_esc = false })
 end, { desc = "LazyDocker (root dir)" })
+
+map("n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>", { desc = "Open diagnostic float" })
