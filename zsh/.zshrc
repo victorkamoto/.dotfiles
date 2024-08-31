@@ -13,10 +13,15 @@ export PATH="$HOME/.config/composer/vendor/bin:$PATH"
 
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.zsh_history
-HISTSIZE=1000
+HISTSIZE=1000000
 SAVEHIST=1000000
-HIST_IGNORE_ALL_DUPS=1
-HIST_FIND_NO_DUPS=1
+
+setopt HIST_IGNORE_ALL_DUPS  # do not put duplicated command into history list
+setopt HIST_SAVE_NO_DUPS  # do not save duplicated command
+setopt HIST_REDUCE_BLANKS  # remove unnecessary blanks
+setopt INC_APPEND_HISTORY_TIME  # append command to history file immediately after execution
+setopt EXTENDED_HISTORY  # record command start time
+
 bindkey -e
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
@@ -28,7 +33,7 @@ compinit
 
 # AutoSuggestions
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 ## >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('/opt/anaconda/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
@@ -128,6 +133,14 @@ _fzf_comprun() {
   esac
 }
 
+alias drop-caches='sudo paccache -rk3; yay -Sc --aur --noconfirm'
+alias update-all='export TMPFILE="$(mktemp)"; \
+    sudo true; \
+    rate-mirrors --save=$TMPFILE arch --max-delay=21600 \
+      && sudo mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist-backup \
+      && sudo mv $TMPFILE /etc/pacman.d/mirrorlist \
+      && drop-caches \
+      && yay -Syyu --noconfirm'
 
 # Set up fzf key bindings and fuzzy completion
 eval "$(fzf --zsh)"
@@ -138,5 +151,8 @@ alias cd="z"
 
 # Starship prompt
 eval "$(starship init zsh)"
+
+# cowsay x fortune
+cowthink $(fortune)
 
 

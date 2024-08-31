@@ -1,28 +1,26 @@
 {
+  "position": "bottom",
   "height": 25,
   "spacing": 4,
   "modules-left": [
-    "custom/launcher",
+    // "custom/launcher",
     "hyprland/workspaces",
     "temperature",
     "memory",
     "cpu",
     "network",
   ],
-  "modules-center": ["hyprland/window"],
+  "modules-center": ["wlr/taskbar"],
   "modules-right": [
     "tray",
     "pulseaudio",
-    "idle_inhibitor",
     "power-profiles-daemon",
     "battery",
+    "privacy",
     "clock",
     "custom/power",
     "custom/notification",
   ],
-  "hyprland/workspaces": {
-    "disable-scroll": true,
-  },
   "keyboard-state": {
     "numlock": true,
     "capslock": true,
@@ -32,7 +30,17 @@
       "unlocked": "",
     },
   },
-
+  "hyprland/workspaces": {
+    "on-scroll-up": "hyprctl dispatch workspace e+1",
+    "on-scroll-down": "hyprctl dispatch workspace e-1",
+    // "persistent-workspaces": {
+    //   "*": 3, // every monitor
+    // },
+  },
+  "hyprland/window": {
+    "format": "{class}",
+    "separate-outputs": true,
+  },
   "mpd": {
     "format": "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ⸨{songPosition}|{queueLength}⸩ {volume}% ",
     "format-disconnected": "Disconnected ",
@@ -67,8 +75,9 @@
     },
   },
   "tray": {
-    "icon-size": 15,
-    "spacing": 25,
+    "icon-size": 13,
+    "show-passive-items": true,
+    "spacing": 12,
   },
   "clock": {
     "format": "{:%H:%M}",
@@ -97,8 +106,7 @@
   },
   "cpu": {
     "interval": 1,
-    "format": "{icon0} {icon1} {icon2} {icon3} {icon4} {icon5} {icon6} {icon7}",
-    "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+    "format": "  {usage}%",
   },
   "memory": {
     "interval": 1,
@@ -147,19 +155,20 @@
   "network": {
     "interval": 1,
     "format-wifi": "{bandwidthDownBytes} ↓",
+    "format-ethernet": "{bandwidthDownBytes} ↓",
     "tooltip": true,
     "tooltip-format": "{essid} {signalStrength}%",
+    "tooltip-format-ethernet": "{ifname}  ",
     "format-linked": "  {ifname} (No IP)",
     "format-disconnected": "⚠ Offline",
 
     "format-alt": "{ifname}: {ipaddr}/{cidr}",
   },
   "pulseaudio": {
-    "scroll-step": 1,
-    "format": "{format_source}   {icon}",
-    "format-bluetooth": "{icon}   {format_source}",
-    "format-bluetooth-muted": " {icon}   {format_source}",
-    "format-muted": "{format_source}   {icon}",
+    "format": "{format_source}  {icon}",
+    "format-bluetooth": "{format_source}",
+    "format-bluetooth-muted": "{format_source}",
+    "format-muted": "{format_source}  {icon}",
     "format-source": "",
     "format-source-muted": " ",
     "format-icons": {
@@ -172,6 +181,8 @@
       "default": ["", "", " "],
     },
     "on-click": "pavucontrol",
+    "on-scroll-up": "swayosd-client --output-volume raise",
+    "on-scroll-down": "swayosd-client --output-volume lower",
     "states": {
       "warning": 85,
     },
@@ -209,5 +220,37 @@
     "on-click": "swaync-client -t -sw",
     "on-click-right": "swaync-client -d -sw",
     "escape": true,
+  },
+  "privacy": {
+    "icon-spacing": 4,
+    "icon-size": 18,
+    "transition-duration": 250,
+    "modules": [
+      {
+        "type": "screenshare",
+        "tooltip": true,
+        "tooltip-icon-size": 24,
+      },
+      {
+        "type": "audio-out",
+        "tooltip": true,
+        "tooltip-icon-size": 24,
+      },
+      {
+        "type": "audio-in",
+        "tooltip": true,
+        "tooltip-icon-size": 24,
+      },
+    ],
+  },
+  "wlr/taskbar": {
+    "format": "{icon}",
+    "icon-size": 13,
+    "icon-theme": "Papirus-Dark",
+    "tooltip-format": "{title}",
+    "on-click": "activate",
+    "on-click-middle": "close",
+    "ignore-list": [],
+    "active-first": true,
   },
 }
