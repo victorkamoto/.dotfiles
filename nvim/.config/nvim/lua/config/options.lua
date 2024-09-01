@@ -3,3 +3,5 @@
 -- Add any additional options here
 
 vim.opt.background = "dark"
+
+vim.g.lazyvim_python_lsp = "basedpyright"
