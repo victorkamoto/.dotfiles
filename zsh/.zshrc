@@ -153,6 +153,6 @@ alias cd="z"
 eval "$(starship init zsh)"
 
 # cowsay x fortune
-cowthink $(fortune)
+# cowthink $(fortune)
 
 
