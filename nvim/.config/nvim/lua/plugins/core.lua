@@ -40,6 +40,10 @@ return {
     enabled = false,
     name = "catppuccin",
   },
+  {
+    "echasnovski/mini.pairs",
+    enabled = false,
+  },
   -- Neotree
   {
     "nvim-neo-tree/neo-tree.nvim",
@@ -97,12 +101,15 @@ return {
     "nvim-treesitter/nvim-treesitter-context",
     opts = { mode = "cursor", max_lines = 0 },
   },
-  -- Mason borders
+  -- Mason
   {
     "williamboman/mason.nvim",
     opts = {
       ui = {
         border = "rounded",
+      },
+      ensure_installed = {
+        "djlint",
       },
     },
   },
@@ -123,5 +130,20 @@ return {
         },
       },
     },
+  },
+  {
+    "stevearc/conform.nvim",
+    opts = {
+      formatters_by_ft = {
+        htmldjango = { "djlint" },
+      },
+    },
+  },
+  {
+    "windwp/nvim-autopairs",
+    event = "InsertEnter",
+    config = true,
+    -- use opts = {} for passing setup options
+    -- this is equivalent to setup({}) function
   },
 }
