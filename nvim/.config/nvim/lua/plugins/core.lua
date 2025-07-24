@@ -13,23 +13,8 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = function()
-        -- empty func to override default behaviour
-      end,
+      colorscheme = "catppuccin",
     },
-  },
-  {
-    "sainnhe/gruvbox-material",
-    config = function()
-      -- opts
-      vim.g.gruvbox_material_background = "hard"
-      vim.g.gruvbox_material_better_performance = 1
-      -- set
-      vim.cmd.colorscheme("gruvbox-material")
-      -- tweaks
-      vim.api.nvim_set_hl(0, "FloatBorder", { link = "Normal" })
-      vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
-    end,
   },
   {
     "folke/tokyonight.nvim",
@@ -37,8 +22,16 @@ return {
   },
   {
     "catppuccin/nvim",
-    enabled = false,
     name = "catppuccin",
+    opts = {
+      -- color_overrides = {
+      --   mocha = {
+      --     base = "#000000",
+      --     mantle = "#000000",
+      --     crust = "#000000",
+      --   },
+      -- },
+    },
   },
   {
     "echasnovski/mini.pairs",

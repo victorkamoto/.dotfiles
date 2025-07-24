@@ -1,16 +1,16 @@
 {
   "position": "bottom",
-  "height": 25,
+  "height": 8,
   "spacing": 4,
   "modules-left": [
-    // "custom/launcher",
-    "hyprland/workspaces",
+    "custom/launcher",
     "temperature",
     "memory",
     "cpu",
     "network",
+    "wlr/taskbar",
   ],
-  "modules-center": ["wlr/taskbar"],
+  "modules-center": ["hyprland/workspaces"],
   "modules-right": [
     "tray",
     "pulseaudio",
@@ -75,7 +75,7 @@
     },
   },
   "tray": {
-    "icon-size": 13,
+    "icon-size": 12,
     "show-passive-items": true,
     "spacing": 12,
   },
@@ -106,11 +106,11 @@
   },
   "cpu": {
     "interval": 1,
-    "format": "  {usage}%",
+    "format": "   {usage}%",
   },
   "memory": {
     "interval": 1,
-    "format": " {}%",
+    "format": "  {}%",
     "states": {
       "warning": 85,
     },
@@ -121,7 +121,7 @@
     "critical-threshold": 80,
     // "format-critical": "{temperatureC}°C {icon}",
     "format": "{icon} {temperatureC}°C",
-    "format-icons": [" ", "", " "],
+    "format-icons": [" "],
   },
   "backlight": {
     "device": "intel_backlight",
@@ -136,10 +136,10 @@
     },
     "format": "{icon} {capacity}%",
     "format-full": "{icon} {capacity}%",
-    "format-charging": "  {capacity}%",
+    "format-charging": " {capacity}%",
     "format-plugged": " {capacity}%",
     "format-alt": "{icon} {time}",
-    "format-icons": ["", "", "", "", ""],
+    "format-icons": [" ", " ", " ", " ", " "],
   },
   "power-profiles-daemon": {
     "format": "{icon}",
@@ -245,12 +245,12 @@
   },
   "wlr/taskbar": {
     "format": "{icon}",
-    "icon-size": 13,
+    "icon-size": 12,
     "icon-theme": "Papirus-Dark",
     "tooltip-format": "{title}",
     "on-click": "activate",
     "on-click-middle": "close",
     "ignore-list": [],
-    "active-first": true,
+    // "active-first": true,
   },
 }

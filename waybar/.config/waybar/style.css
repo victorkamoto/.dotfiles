@@ -1,22 +1,25 @@
 * {
   /* `otf-font-awesome` is required to be installed for icons */
-  font-family: "JetBrainsMono Nerd Font";
+  /* font-family: "JetBrainsMono Nerd Font"; */
+  font-family: "SF Pro";
   font-size: 11px;
+  font-weight: 600;
 }
 window > box {
-  margin-left: 4px;
-  margin-right: 4px;
-  background: @theme_base_color;
+  /* margin-left: 4px; */
+  /* margin-right: 4px; */
+  /* background: black; */
+  background: #111111;
   padding: 2.5px;
   padding-right: 6px;
-  border: 2px solid @unfocused_borders;
-  border-radius: 7px;
+  /* border: 2px solid @unfocused_borders; */
+  border: none;
 
   /* uncomment if waybar>position: top */
   /*margin-top: 4px;*/
 
   /* uncomment if waybar>position: bottom */
-  margin-bottom: 4px;
+  /* margin-bottom: 4px; */
 }
 
 window#waybar {
@@ -73,7 +76,8 @@ button:hover {
 #workspaces button {
   min-width: 20px;
   padding: 0 5px;
-  background: rgba(0, 0, 0, 0.2);
+  /* background: rgba(0, 0, 0, 0.2); */
+  background-color: #201e1d;
   color: #d4be98;
   border-radius: 5px;
   margin-right: 2.5px;
@@ -109,6 +113,15 @@ button:hover {
 
 #custom-launcher {
   color: rgb(201, 203, 255);
+}
+#temperature,
+#cpu,
+#memory,
+#network,
+#pulseaudio,
+#power-profiles-daemon,
+#battery {
+  color: white;
 }
 
 #clock,
@@ -151,17 +164,28 @@ button:hover {
 #custom-notification:hover,
 #privacy:hover,
 #mpd:hover {
-  background: rgba(0, 0, 0, 0.2);
+  background: #201e1d;
+  border-radius: 5px;
+}
+
+#taskbar {
+  background-color: #201e1d;
+  /* margin: 3px 0; */
+  border-radius: 5px;
+}
+
+#taskbar button.active {
+  background-color: #a89984;
   border-radius: 5px;
 }
 
 #taskbar button {
   padding: 0 5px;
   padding-left: 7px;
-  margin: 0 1px;
-  border-radius: 5px;
+  /* margin: 0 1px; */
+  /* border-radius: 5px; */
 
-  background: @theme_base_color;
+  /* background: @theme_base_color; */
 }
 #taskbar button:hover {
   background: rgba(0, 0, 0, 0.2);
@@ -228,7 +252,9 @@ button:hover {
 }
 
 #power-profiles-daemon.balanced {
-  color: rgb(150, 205, 251);
+  /* color: rgb(150, 205, 251); */
+
+  color: white;
 }
 
 #power-profiles-daemon.power-saver {
@@ -240,11 +266,13 @@ label:focus {
 }
 
 #cpu {
-  color: #d4be98;
+  /* color: #d4be98; */
+  color: white;
 }
 
 #memory {
-  color: #d4be98;
+  /* color: #d4be98; */
+  color: white;
 }
 
 #disk {
@@ -289,7 +317,9 @@ label:focus {
 }
 
 #custom-power {
-  color: rgb(242, 143, 173);
+  /* color: rgb(242, 143, 173); */
+
+  color: red;
 }
 
 #custom-notification {
@@ -297,7 +327,8 @@ label:focus {
 }
 
 #temperature {
-  color: rgb(150, 205, 251);
+  /* color: rgb(150, 205, 251); */
+  color: white;
 }
 
 #temperature.critical {
@@ -305,6 +336,8 @@ label:focus {
 }
 
 #tray {
+  background-color: #201e1d;
+  margin: 3px 0;
 }
 
 #tray > .passive {
