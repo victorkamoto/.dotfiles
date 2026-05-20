@@ -1,12 +1,6 @@
--- Keymaps are automatically loaded on the VeryLazy event
--- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
--- Add any additional keymaps here
-
-local Util = require("lazyvim.util")
 local function map(mode, lhs, rhs, opts)
   local keys = require("lazy.core.handler").handlers.keys
   ---@cast keys LazyKeysHandler
-  -- do not create the keymap if a lazy keys handler exists
   if not keys.active[keys.parse({ lhs, mode = mode }).id] then
     opts = opts or {}
     opts.silent = opts.silent ~= false
@@ -14,15 +8,17 @@ local function map(mode, lhs, rhs, opts)
   end
 end
 
--- oil.nvim
 map("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
--- carbon-now.nvim
-map("v", "<leader>cn", ":CarbonNow<CR>", { silent = true, desc = "Screenshot selection" })
-
---lazydocker
 map("n", "<leader>gd", function()
-  Util.terminal({ "lazydocker", "-f", Util.root() .. "docker-compose.yml" }, { cwd = Util.root(), esc_esc = false })
-end, { desc = "LazyDocker (root dir)" })
+  Snacks.lazydocker()
+end, { desc = "LazyDocker" })
 
 map("n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>", { desc = "Open diagnostic float" })
+
+map("n", "<leader>z", function()
+  Snacks.zen()
+end, { desc = "Toggle Zen Mode" })
+map("n", "<leader>Z", function()
+  Snacks.zen.zoom()
+end, { desc = "Toggle Zoom Mode" })
