@@ -24,7 +24,6 @@
   vars:
     dotfiles_dir: "{{ playbook_dir }}"
     nvm_version: "v0.40.1"
-
     system_packages:
       Archlinux:
         - neovim
@@ -67,13 +66,11 @@
         - tmux
         - zsh
         - stow
-        - fzf
         - zoxide
         - golang-go
         - bat
         - zsh-autosuggestions
         - zsh-syntax-highlighting
-
     stow_dirs:
       Archlinux:
         - nvim
@@ -90,6 +87,12 @@
         - zsh
 
   pre_tasks:
+    - name: Pre | Set forward-compatible fact aliases
+      ansible.builtin.set_fact:
+        os_family: "{{ ansible_facts['os_family'] }}"
+        user_home: "{{ ansible_facts['env']['HOME'] }}"
+        user_name: "{{ ansible_facts['user_id'] }}"
+
     - name: Pre | Pull latest dotfiles
       ansible.builtin.command:
         cmd: git pull --ff-only
@@ -107,9 +110,9 @@
     - name: Pre | Fail early on unsupported OS family
       ansible.builtin.fail:
         msg: >-
-          Unsupported OS family: {{ ansible_os_family }}.
+          Unsupported OS family: {{ os_family }}.
           This playbook supports Archlinux and Debian only.
-      when: ansible_os_family not in ['Archlinux', 'Debian']
+      when: os_family not in ['Archlinux', 'Debian']
 
   tasks:
     # =========================================================================
@@ -120,54 +123,77 @@
       community.general.pacman:
         update_cache: true
         upgrade: true
-      when: ansible_os_family == 'Archlinux'
+      when: os_family == 'Archlinux'
 
-    - name: System | apt update (cached 1h)
+    # ----- Ubuntu APT setup -----
+    - name: System | Find stale Neovim PPA source files (Ubuntu)
+      ansible.builtin.find:
+        paths:
+          - /etc/apt/sources.list.d
+        patterns:
+          - "neovim-ppa-ubuntu-stable*"
+          - "*neovim*"
+        file_type: file
+      register: stale_neovim_sources
+      when: os_family == 'Debian'
+
+    - name: System | Remove stale Neovim PPA source files (Ubuntu)
       become: true
-      ansible.builtin.apt:
-        update_cache: true
-        cache_valid_time: 3600
-      when: ansible_os_family == 'Debian'
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ stale_neovim_sources.files | default([]) }}"
+      when:
+        - os_family == 'Debian'
+        - stale_neovim_sources.files | default([]) | length > 0
 
     - name: System | Add Neovim stable PPA (Ubuntu only)
       become: true
       ansible.builtin.apt_repository:
         repo: ppa:neovim-ppa/stable
         state: present
-      when: ansible_os_family == 'Debian'
+        update_cache: false
+      when: os_family == 'Debian'
+
+    - name: System | apt update (cached 1h)
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+      when: os_family == 'Debian'
 
     - name: System | Install packages
       become: true
       ansible.builtin.package:
-        name: "{{ system_packages[ansible_os_family] }}"
+        name: "{{ system_packages[os_family] }}"
         state: present
 
     - name: System | Refresh font cache (Arch)
       ansible.builtin.command: fc-cache -f
       register: fc_cache
       changed_when: false
-      when: ansible_os_family == 'Archlinux'
+      when: os_family == 'Archlinux'
 
     # =========================================================================
     # UBUNTU-ONLY: tools not packaged at usable versions
     # =========================================================================
     - name: Ubuntu | Ensure ~/.local/bin exists
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/.local/bin"
+        path: "{{ user_home }}/.local/bin"
         state: directory
         mode: "0755"
-      when: ansible_os_family == 'Debian'
+      when: os_family == 'Debian'
 
     - name: Ubuntu | Symlink Debian-renamed binaries
       ansible.builtin.file:
         src: "{{ item.src }}"
-        dest: "{{ ansible_env.HOME }}/.local/bin/{{ item.dest }}"
+        dest: "{{ user_home }}/.local/bin/{{ item.dest }}"
         state: link
         force: true
       loop:
         - { src: /usr/bin/fdfind, dest: fd }
         - { src: /usr/bin/batcat, dest: bat }
-      when: ansible_os_family == 'Debian'
+      when: os_family == 'Debian'
 
     - name: Ubuntu | Install Starship prompt
       become: true
@@ -175,14 +201,49 @@
         cmd: set -o pipefail; curl -sS https://starship.rs/install.sh | sh -s -- -y
         executable: /bin/bash
         creates: /usr/local/bin/starship
-      when: ansible_os_family == 'Debian'
+      when: os_family == 'Debian'
+
+    - name: Ubuntu | Probe fzf for --zsh support
+      ansible.builtin.command: fzf --zsh
+      register: fzf_probe
+      failed_when: false
+      changed_when: false
+      when: os_family == 'Debian'
+
+    - name: Ubuntu | Remove apt-installed fzf if too old
+      become: true
+      ansible.builtin.apt:
+        name: fzf
+        state: absent
+        purge: true
+      when:
+        - os_family == 'Debian'
+        - fzf_probe.rc | default(1) != 0
+
+    - name: Ubuntu | Install / upgrade fzf to current release
+      become: true
+      ansible.builtin.shell: |
+        set -euo pipefail
+        version=$(curl -s "https://api.github.com/repos/junegunn/fzf/releases/latest" \
+          | grep -Po '"tag_name": "v?\K[^"]*')
+        tmp=$(mktemp -d)
+        curl -fsSL -o "$tmp/fzf.tar.gz" \
+          "https://github.com/junegunn/fzf/releases/download/v${version}/fzf-${version}-linux_amd64.tar.gz"
+        tar -xzf "$tmp/fzf.tar.gz" -C "$tmp" fzf
+        install -m 755 "$tmp/fzf" /usr/local/bin/fzf
+        rm -rf "$tmp"
+      args:
+        executable: /bin/bash
+      when:
+        - os_family == 'Debian'
+        - fzf_probe.rc | default(1) != 0
 
     - name: Ubuntu | Get installed eza version (if any)
       ansible.builtin.command: eza --version
       register: eza_version
       failed_when: false
       changed_when: false
-      when: ansible_os_family == 'Debian'
+      when: os_family == 'Debian'
 
     - name: Ubuntu | Install / upgrade eza
       become: true
@@ -194,8 +255,10 @@
         tar -xzf "$tmp/eza.tar.gz" -C "$tmp" eza
         install -m 755 "$tmp/eza" /usr/local/bin/eza
         rm -rf "$tmp"
+      args:
+        executable: /bin/bash
       when:
-        - ansible_os_family == 'Debian'
+        - os_family == 'Debian'
         - eza_version.rc != 0
 
     - name: Ubuntu | Install lazygit
@@ -211,17 +274,18 @@
         install -m 755 "$tmp/lazygit" /usr/local/bin/lazygit
         rm -rf "$tmp"
       args:
+        executable: /bin/bash
         creates: /usr/local/bin/lazygit
-      when: ansible_os_family == 'Debian'
+      when: os_family == 'Debian'
 
     # =========================================================================
     # STOW DOTFILES
     # =========================================================================
     - name: Stow | Symlink dotfiles into $HOME
       ansible.builtin.command:
-        cmd: "stow -v --restow -t {{ ansible_env.HOME }} {{ item }}"
+        cmd: "stow -v --restow -t {{ user_home }} {{ item }}"
         chdir: "{{ dotfiles_dir }}"
-      loop: "{{ stow_dirs[ansible_os_family] }}"
+      loop: "{{ stow_dirs[os_family] }}"
       register: stow_run
       changed_when: "'LINK:' in stow_run.stderr or 'UNLINK:' in stow_run.stderr"
 
@@ -230,7 +294,7 @@
     # =========================================================================
     - name: Node | Check if NVM is installed
       ansible.builtin.stat:
-        path: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+        path: "{{ user_home }}/.nvm/nvm.sh"
       register: nvm_stat
 
     - name: Node | Install NVM
@@ -278,7 +342,7 @@
           | sh -s -- -y --no-modify-path
       args:
         executable: /bin/bash
-        creates: "{{ ansible_env.HOME }}/.cargo/bin/rustc"
+        creates: "{{ user_home }}/.cargo/bin/rustc"
 
     - name: Rust | Install / upgrade cargo tools
       ansible.builtin.shell: |
@@ -293,6 +357,13 @@
       register: cargo_install
       changed_when: "'Installed package' in cargo_install.stdout or 'Replacing' in cargo_install.stdout"
 
+    - name: Rust | Configure worktrunk shell integration in .zshrc
+      ansible.builtin.lineinfile:
+        path: "{{ user_home }}/.zshrc"
+        line: 'if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi'
+        regexp: "wt config shell init"
+        state: present
+
     # =========================================================================
     # sesh (Go)
     # =========================================================================
@@ -301,14 +372,14 @@
       register: yay_check
       failed_when: false
       changed_when: false
-      when: ansible_os_family == 'Archlinux'
+      when: os_family == 'Archlinux'
 
     - name: Sesh | Install via yay (AUR)
       ansible.builtin.command: yay -S --noconfirm --needed sesh-bin
       register: sesh_yay
       changed_when: "'nothing to do' not in sesh_yay.stdout | lower"
       when:
-        - ansible_os_family == 'Archlinux'
+        - os_family == 'Archlinux'
         - yay_check.rc == 0
 
     - name: Sesh | Install via go install (fallback)
@@ -316,9 +387,9 @@
         export PATH="$PATH:/usr/local/go/bin:$HOME/go/bin"
         go install github.com/joshmedeski/sesh/v2@latest
       args:
-        creates: "{{ ansible_env.HOME }}/go/bin/sesh"
+        creates: "{{ user_home }}/go/bin/sesh"
         executable: /bin/bash
-      when: ansible_os_family == 'Debian' or yay_check.rc | default(1) != 0
+      when: os_family == 'Debian' or yay_check.rc | default(1) != 0
 
     # =========================================================================
     # fzf-git.sh + TPM + plugins
@@ -326,29 +397,29 @@
     - name: Tools | Clone / update fzf-git.sh
       ansible.builtin.git:
         repo: https://github.com/junegunn/fzf-git.sh.git
-        dest: "{{ ansible_env.HOME }}/fzf-git.sh"
+        dest: "{{ user_home }}/fzf-git.sh"
         depth: 1
         update: true
 
     - name: Tmux | Clone / update TPM
       ansible.builtin.git:
         repo: https://github.com/tmux-plugins/tpm
-        dest: "{{ ansible_env.HOME }}/.tmux/plugins/tpm"
+        dest: "{{ user_home }}/.tmux/plugins/tpm"
         depth: 1
         update: true
 
     - name: Tmux | Count installed TPM plugin directories
       ansible.builtin.find:
-        paths: "{{ ansible_env.HOME }}/.tmux/plugins"
+        paths: "{{ user_home }}/.tmux/plugins"
         file_type: directory
         recurse: false
       register: tpm_dirs
 
     - name: Tmux | Install plugins via TPM (headless)
       ansible.builtin.command:
-        cmd: "{{ ansible_env.HOME }}/.tmux/plugins/tpm/scripts/install_plugins.sh"
+        cmd: "{{ user_home }}/.tmux/plugins/tpm/scripts/install_plugins.sh"
       environment:
-        TMUX_PLUGIN_MANAGER_PATH: "{{ ansible_env.HOME }}/.tmux/plugins"
+        TMUX_PLUGIN_MANAGER_PATH: "{{ user_home }}/.tmux/plugins"
       when: tpm_dirs.matched | int <= 1
 
     # =========================================================================
@@ -358,7 +429,7 @@
       ansible.builtin.shell:
         cmd: set -o pipefail; curl -fsSL https://opencode.ai/install | bash
         executable: /bin/bash
-        creates: "{{ ansible_env.HOME }}/.opencode/bin/opencode"
+        creates: "{{ user_home }}/.opencode/bin/opencode"
 
     # =========================================================================
     # Default shell
@@ -366,34 +437,40 @@
     - name: Shell | Set default shell to zsh
       become: true
       ansible.builtin.user:
-        name: "{{ ansible_user_id }}"
+        name: "{{ user_name }}"
         shell: /usr/bin/zsh
       register: shell_change
 
   post_tasks:
     - name: Done | Show next steps
       ansible.builtin.debug:
-        msg: |
-          ========================================================================
-          DOTFILES SETUP COMPLETE
-          ========================================================================
-          Next steps:
-            1. Restart your terminal (WSL: `wsl --shutdown` then reopen) to load
-               zsh + starship.
-            2. Open tmux and press <prefix>+I to verify plugins.
-            3. Open neovim — LazyVim will auto-install plugins on first launch.
-
-          {% if ansible_os_family == 'Debian' %}
-          NERD FONT (WSL only):
-            Icons in tmux, nvim, starship, and eza require a Nerd Font.
-            Install JetBrainsMono Nerd Font on the WINDOWS side:
-              1. https://www.nerdfonts.com/font-downloads
-              2. Right-click each .ttf -> "Install for all users"
-              3. Windows Terminal -> Settings -> Profiles -> Ubuntu ->
-                 Appearance -> Font face -> "JetBrainsMono Nerd Font"
-              4. Restart Windows Terminal.
-
-            WSL gotcha: if `chsh` didn't stick, check /etc/wsl.conf for a
-            [user] default block overriding the login shell.
-          {% endif %}
-          ========================================================================
+        msg: "{{ common_msg + (wsl_msg if os_family == 'Debian' else []) + closing_msg }}"
+      vars:
+        common_msg:
+          - ""
+          - ════════════════════════════════════════════════════════════════════════
+          - "  ✓  DOTFILES SETUP COMPLETE"
+          - ════════════════════════════════════════════════════════════════════════
+          - ""
+          - "Next steps:"
+          - "  1. Restart your terminal (WSL: `wsl --shutdown` then reopen)"
+          - "     to load zsh + starship."
+          - "  2. Open tmux and press <prefix>+I to verify plugins."
+          - "  3. Open neovim — LazyVim will auto-install plugins on first launch."
+        wsl_msg:
+          - ""
+          - "Nerd Font (WSL only):"
+          - "  Icons in tmux, nvim, starship, and eza need a Nerd Font, installed"
+          - "  on the Windows side (WSL has no fonts of its own)."
+          - ""
+          - "  1. https://www.nerdfonts.com/font-downloads"
+          - '  2. Right-click each .ttf -> "Install for all users"'
+          - "  3. Windows Terminal -> Settings -> Profiles -> Ubuntu ->"
+          - '     Appearance -> Font face -> "JetBrainsMono Nerd Font"'
+          - "  4. Restart Windows Terminal."
+          - ""
+          - "  Gotcha: if `chsh` didn't stick, check /etc/wsl.conf for a"
+          - "  [user] default=... block overriding the login shell."
+        closing_msg:
+          - ""
+          - ════════════════════════════════════════════════════════════════════════
