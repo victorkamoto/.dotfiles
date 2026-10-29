@@ -80,6 +80,7 @@
         - hypr
         - kitty
         - quickshell
+        - illogical-impulse
       Debian:
         - nvim
         - starship
